@@ -1,37 +1,29 @@
-package com.example.cookfolio.ui.home;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.cookfolio.databinding.FragmentHomeBinding;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.cookfolio.R;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private RecyclerView recyclerView;
+    private RecipeAdapter recipeAdapter;
+    private List<Recipe> recipeList;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = root.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recipeList = new ArrayList<>();
+        // Populate recipeList with data
+        recipeAdapter = new RecipeAdapter(recipeList);
+        recyclerView.setAdapter(recipeAdapter);
         return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }
