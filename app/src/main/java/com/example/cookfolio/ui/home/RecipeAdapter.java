@@ -1,3 +1,5 @@
+package com.example.cookfolio.ui.home;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -5,6 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.cookfolio.Classes.Recipe;
+import com.example.cookfolio.R;
+
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -26,7 +31,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
         holder.username.setText(recipe.getUsername());
-        holder.timestamp.setText(recipe.getTimestamp());
         holder.recipeDescription.setText(recipe.getDescription());
         // Set image resources using Glide or Picasso
         // Glide.with(holder.itemView.getContext()).load(recipe.getProfileImage()).into(holder.profileImage);
@@ -41,13 +45,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profileImage, recipeImage, likeIcon, commentIcon;
-        TextView username, timestamp, recipeDescription;
+        TextView username, recipeDescription;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
             profileImage = itemView.findViewById(R.id.profile_image);
             username = itemView.findViewById(R.id.username);
-            timestamp = itemView.findViewById(R.id.timestamp);
             recipeImage = itemView.findViewById(R.id.recipe_image);
             recipeDescription = itemView.findViewById(R.id.recipe_description);
             likeIcon = itemView.findViewById(R.id.like_icon);

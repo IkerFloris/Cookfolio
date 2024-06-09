@@ -1,3 +1,5 @@
+package com.example.cookfolio.ui.home;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.cookfolio.Classes.Recipe;
 import com.example.cookfolio.R;
 import java.util.ArrayList;
 import java.util.List;

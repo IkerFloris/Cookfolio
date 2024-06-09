@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.cookfolio"
-    compileSdk = 31
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.cookfolio"
-        minSdk = 31
-        targetSdk = 31
+        minSdk = 34
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
