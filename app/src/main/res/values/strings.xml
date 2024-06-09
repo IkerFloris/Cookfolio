@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Cookfolio</string>
+    <string name="title_home">Inici</string>
+    <string name="title_calendar">Calendari</string>
+    <string name="title_recipes">Receptes</string>
+    <string name="user_profile">Perfil</string>
+    <string name="title_search">Cerca</string>
+    <string name="profile_image_desc">Lorem Ipsum</string>
+    <string name="recipe_image_desc">Lorem ipsum Recipe Lorem Ipsum Recipe\n</string>
+    <string name="like_icon_desc">Like Icon\n</string>
+    <string name="comment_icon_desc">Comment</string>
+</resources>
