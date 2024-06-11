@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.cookfolio.Classes.Recipe;
 import com.example.cookfolio.R;
 
@@ -31,10 +33,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
         holder.username.setText(recipe.getUsername());
-        holder.recipeDescription.setText(recipe.getDescription());
+        String timestamp = recipe.getTimestamp().toString();
+        holder.recipeTimestamp.setText(timestamp);
+        holder.recipeName.setText(recipe.getName());
         // Set image resources using Glide or Picasso
-        // Glide.with(holder.itemView.getContext()).load(recipe.getProfileImage()).into(holder.profileImage);
-        // Glide.with(holder.itemView.getContext()).load(recipe.getRecipeImage()).into(holder.recipeImage);
+        Glide.with(holder.itemView.getContext()).load(recipe.getProfileImage()).into(holder.profileImage);
+        Glide.with(holder.itemView.getContext()).load(recipe.getRecipeImage()).into(holder.recipeImage);
     }
 
     @Override
@@ -45,16 +49,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profileImage, recipeImage, likeIcon, commentIcon;
-        TextView username, recipeDescription;
+        TextView username, recipeTimestamp, recipeName;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
             profileImage = itemView.findViewById(R.id.profile_image);
             username = itemView.findViewById(R.id.username);
             recipeImage = itemView.findViewById(R.id.recipe_image);
-            recipeDescription = itemView.findViewById(R.id.recipe_description);
+            recipeTimestamp = itemView.findViewById(R.id.recipe_timestamp);
             likeIcon = itemView.findViewById(R.id.like_icon);
             commentIcon = itemView.findViewById(R.id.comment_icon);
+            recipeName = itemView.findViewById(R.id.recipeName);
         }
     }
 }
