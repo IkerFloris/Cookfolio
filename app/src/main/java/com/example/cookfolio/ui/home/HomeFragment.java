@@ -1,5 +1,7 @@
 package com.example.cookfolio.ui.home;
 
+import android.media.Image;
+import android.media.ImageReader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +41,8 @@ public class HomeFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             formattedDateTime = now.format(formatter);
         }
-        Recipe test = new Recipe("Cheff Bezos", formattedDateTime, "This is a sample recipe", R.drawable.ic_user_profile, R.drawable.ic_recipe_placeholder, "Test Farfale");
+
+        Recipe test = new Recipe("Cheff Bezos", formattedDateTime, "This is a sample recipe", R.drawable.ic_user_profile, R.drawable.ic_beef_goulash, "Test Farfale");
         Recipe anothertest = new Recipe("Iker Floris", formattedDateTime, "This is the second sample recipe", R.drawable.ic_user_profile, R.drawable.ic_beef_goulash, "Beef Goulash");
         recipeList.add(test);
         recipeList.add(anothertest);

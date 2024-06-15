@@ -13,13 +13,39 @@
 
     <fragment
         android:id="@+id/navigation_calendar"
-        android:name="com.example.cookfolio.ui.dashboard.DashboardFragment"
+        android:name="com.example.cookfolio.Calendar.CalendarFragment"
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
 
     <fragment
         android:id="@+id/navigation_recipes"
-        android:name="com.example.cookfolio.ui.notifications.NotificationsFragment"
+        android:name="com.example.cookfolio.NewRecipe.NewRecipeFragment"
         android:label="@string/title_recipes"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe_creation" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.cookfolio.Perfil_Despensa.ProfileFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_navigation_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_despensa"
+            app:destination="@id/navigation_despensa" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_despensa"
+        android:name="com.example.cookfolio.Perfil_Despensa.DespensaFragment"
+        android:label="Rebost"
+        tools:layout="@layout/despensa_fragment" >
+        <action
+            android:id="@+id/action_navigation_despensa_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.cookfolio.Search.SearchFragment"
+        android:label="Cerca"
+        tools:layout="@layout/navigation_search" />
 </navigation>
