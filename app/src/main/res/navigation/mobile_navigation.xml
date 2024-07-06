@@ -13,9 +13,8 @@
 
     <fragment
         android:id="@+id/navigation_calendar"
-        android:name="com.example.cookfolio.Calendar.CalendarFragment"
         android:label="@string/title_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="" />
 
     <fragment
         android:id="@+id/navigation_recipes"

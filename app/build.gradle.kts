@@ -49,5 +49,4 @@ dependencies {
     implementation(libs.appcompat)
     implementation (libs.glide)
     implementation(libs.picasso)
-
 }

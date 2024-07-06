@@ -9,6 +9,9 @@
     <string name="recipe_image_desc">Lorem ipsum Recipe Lorem Ipsum Recipe</string>
     <string name="like_icon_desc">Like Icon</string>
     <string name="comment_icon_desc">Comment</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="difficulty_levels">
+        <item>Fàcil</item>
+        <item>Intermig</item>
+        <item>Difícil</item>
+    </string-array>
 </resources>

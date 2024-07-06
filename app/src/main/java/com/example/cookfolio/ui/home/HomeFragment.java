@@ -42,8 +42,8 @@ public class HomeFragment extends Fragment {
             formattedDateTime = now.format(formatter);
         }
 
-        Recipe test = new Recipe("Cheff Bezos", formattedDateTime, "This is a sample recipe", R.drawable.ic_user_profile, R.drawable.ic_beef_goulash, "Test Farfale");
-        Recipe anothertest = new Recipe("Iker Floris", formattedDateTime, "This is the second sample recipe", R.drawable.ic_user_profile, R.drawable.ic_beef_goulash, "Beef Goulash");
+        Recipe test = new Recipe("Cheff Bezos", formattedDateTime, "This is a sample recipe", "ic_user_profile.xml", "ic_beef_goulash.jpg", "Test Farfale", "Fàcil", 15);
+        Recipe anothertest = new Recipe("Iker Floris", formattedDateTime, "This is the second sample recipe", "ic_user_profile.xml", "ic_beef_goulash.jpg", "Beef Goulash", "Difícil", 180);
         recipeList.add(test);
         recipeList.add(anothertest);
         // Populate recipeList with data
