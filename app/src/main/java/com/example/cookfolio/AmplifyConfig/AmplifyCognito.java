@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.amplifyframework.api.rest.RestOptions;
 import com.amplifyframework.auth.AuthUserAttributeKey;
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;
 import com.amplifyframework.auth.options.AuthSignOutOptions;
@@ -56,6 +57,7 @@ public class AmplifyCognito {
                 result -> {
                     showToast(result.isSignedIn() ? "Sign In Succeeded" : "Sign In Not Complete");
                     loadHome(username);
+                    getTodo();
                 },
                 error -> showToast("Sign In Failed: " + error.getMessage()));
     }
@@ -106,6 +108,25 @@ public class AmplifyCognito {
 
     private void showToast(String message) {
         handler.post(() -> Toast.makeText(context, message, Toast.LENGTH_LONG).show());
+    }
+
+    private void getTodo() {
+        RestOptions options = RestOptions.builder()
+                .addPath("/Cookfolio/getUsername")
+                .build();
+
+        Amplify.API.get(options,
+                response -> {
+                    if (response.getData() != null) {
+                        byte[] rawBytes = response.getData().getRawBytes();
+                        String responseData = new String(rawBytes);
+                        Log.i("AmplifyCognito", "GET succeeded: " + responseData);
+                    } else {
+                        Log.i("AmplifyCognito", "GET succeeded with no data");
+                    }
+                },
+                error -> Log.e("AmplifyCognito", "GET failed", error)
+        );
     }
 
 

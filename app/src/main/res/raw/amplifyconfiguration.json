@@ -27,23 +27,35 @@
                 "Auth": {
                     "Default": {
                         "authenticationFlowType": "USER_SRP_AUTH",
-                        "socialProviders": [],
-                        "usernameAttributes": [],
-                        "signupAttributes": [
-                            "EMAIL"
+                        "mfaConfiguration": "OFF",
+                        "mfaTypes": [
+                            "SMS"
                         ],
                         "passwordProtectionSettings": {
                             "passwordPolicyMinLength": 8,
                             "passwordPolicyCharacters": []
                         },
-                        "mfaConfiguration": "OFF",
-                        "mfaTypes": [
-                            "SMS"
+                        "signupAttributes": [
+                            "EMAIL"
                         ],
+                        "socialProviders": [],
+                        "usernameAttributes": [],
                         "verificationMechanisms": [
                             "EMAIL"
                         ]
                     }
+                }
+            }
+        }
+    },
+    "api":{
+        "plugins": {
+            "awsAPIPlugin": {
+                "CookfolioApi": {
+                    "endpointType": "REST",
+                    "endpoint": "https://5ncmgn0v1e.execute-api.eu-west-1.amazonaws.com/dev",
+                    "region": "eu-west-1",
+                    "authorizationType": "AWS_IAM"
                 }
             }
         }
