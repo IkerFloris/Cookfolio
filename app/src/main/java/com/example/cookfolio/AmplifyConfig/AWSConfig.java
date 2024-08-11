@@ -15,14 +15,23 @@ import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.example.cookfolio.AccountManagement.*;
 import com.example.cookfolio.ui.home.HomeActivity;
+import com.example.cookfolio.Classes.ApiCalls;
+
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 
-public class AmplifyCognito {
+public class AWSConfig {
 
     private Context context;
     private Handler handler;
 
-    public AmplifyCognito(Context context) {
+    public AWSConfig(Context context) {
 
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
@@ -57,7 +66,7 @@ public class AmplifyCognito {
                 result -> {
                     showToast(result.isSignedIn() ? "Sign In Succeeded" : "Sign In Not Complete");
                     loadHome(username);
-                    getTodo();
+                    ApiCalls.addFirstTimeLoggerBDD(username);
                 },
                 error -> showToast("Sign In Failed: " + error.getMessage()));
     }
@@ -109,25 +118,5 @@ public class AmplifyCognito {
     private void showToast(String message) {
         handler.post(() -> Toast.makeText(context, message, Toast.LENGTH_LONG).show());
     }
-
-    private void getTodo() {
-        RestOptions options = RestOptions.builder()
-                .addPath("/Cookfolio/getUsername")
-                .build();
-
-        Amplify.API.get(options,
-                response -> {
-                    if (response.getData() != null) {
-                        byte[] rawBytes = response.getData().getRawBytes();
-                        String responseData = new String(rawBytes);
-                        Log.i("AmplifyCognito", "GET succeeded: " + responseData);
-                    } else {
-                        Log.i("AmplifyCognito", "GET succeeded with no data");
-                    }
-                },
-                error -> Log.e("AmplifyCognito", "GET failed", error)
-        );
-    }
-
 
 }

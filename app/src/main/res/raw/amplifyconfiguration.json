@@ -59,5 +59,14 @@
                 }
             }
         }
+    },
+    "storage": {
+        "plugins": {
+            "awsS3StoragePlugin": {
+                "bucket": "cookfoliomediabucketc5195-dev",
+                "region": "eu-west-1",
+                "defaultAccessLevel": "guest"
+            }
+        }
     }
 }

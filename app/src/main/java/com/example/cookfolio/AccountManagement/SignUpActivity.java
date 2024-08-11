@@ -7,12 +7,12 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.cookfolio.AmplifyConfig.AmplifyCognito;
+import com.example.cookfolio.AmplifyConfig.AWSConfig;
 import com.example.cookfolio.R;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    AmplifyCognito amplifyCognito;
+    AWSConfig AWSConfig;
     EditText etUsername;
     EditText etEmail;
     EditText etPassword;
@@ -23,7 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        amplifyCognito = new AmplifyCognito(getApplicationContext());
+        AWSConfig = new AWSConfig(getApplicationContext());
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -34,14 +34,14 @@ public class SignUpActivity extends AppCompatActivity {
                 String username = etUsername.getText().toString();
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                amplifyCognito.signUp(email, username, password);
+                AWSConfig.signUp(email, username, password);
             }
         });
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                amplifyCognito.loadLogin();
+                AWSConfig.loadLogin();
             }
         });
     }

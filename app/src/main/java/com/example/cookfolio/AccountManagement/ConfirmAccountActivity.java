@@ -8,25 +8,22 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.cookfolio.AmplifyConfig.AmplifyCognito;
+import com.example.cookfolio.AmplifyConfig.AWSConfig;
 import com.example.cookfolio.R;
 
 public class ConfirmAccountActivity extends AppCompatActivity {
 
     EditText etCode;
     Button btnVerify;
-    AmplifyCognito amplifyCognito;
+    AWSConfig AWSConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_confirm_account);
-        amplifyCognito = new AmplifyCognito(getApplicationContext());
+        AWSConfig = new AWSConfig(getApplicationContext());
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         etCode = findViewById(R.id.etCode);
@@ -35,7 +32,7 @@ public class ConfirmAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String code = etCode.getText().toString();
-                amplifyCognito.confirmAccount(username, code);
+                AWSConfig.confirmAccount(username, code);
             }
         });
     }
