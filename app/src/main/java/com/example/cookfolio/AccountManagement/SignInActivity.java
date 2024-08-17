@@ -7,18 +7,15 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.cookfolio.AmplifyConfig.AmplifyCognito;
+import com.example.cookfolio.AmplifyConfig.AWSConfig;
 import com.example.cookfolio.R;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SignInActivity extends AppCompatActivity {
 
-    AmplifyCognito amplifyCognito;
+    AWSConfig AWSConfig;
     EditText etUsername;
     EditText etPassword;
     Button btnSignUp;
@@ -30,8 +27,8 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_in);
-        amplifyCognito = new AmplifyCognito(getApplicationContext());
-        amplifyCognito.logOut();
+        AWSConfig = new AWSConfig(getApplicationContext());
+        AWSConfig.logOut();
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -40,7 +37,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                amplifyCognito.signIn(username,password);
+                AWSConfig.signIn(username,password);
             }
         });
 
@@ -48,7 +45,7 @@ public class SignInActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                amplifyCognito.loadSignUp();
+                AWSConfig.loadSignUp();
             }
         });
 

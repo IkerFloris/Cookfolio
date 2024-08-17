@@ -9,6 +9,8 @@
     <string name="recipe_image_desc">Lorem ipsum Recipe Lorem Ipsum Recipe</string>
     <string name="like_icon_desc">Like Icon</string>
     <string name="comment_icon_desc">Comment</string>
+    <string name="cerca">Cerca</string>
+    <string name="cookfolio">Cookfolio</string>
     <string-array name="difficulty_levels">
         <item>Fàcil</item>
         <item>Intermig</item>

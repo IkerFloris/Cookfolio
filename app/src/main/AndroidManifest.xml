@@ -5,6 +5,7 @@
     <!-- Permiso para leer el almacenamiento externo -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".AmplifyMain"
@@ -19,6 +20,18 @@
         tools:targetApi="34">
         <activity
             android:name=".AccountManagement.ConfirmAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NewRecipe.NewRecipeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Search.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Perfil_Despensa.DespensaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Perfil_Despensa.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ui.home.HomeActivity"

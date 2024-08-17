@@ -9,15 +9,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cookfolio.AmplifyMain;
 import com.example.cookfolio.Classes.Recipe;
+import com.example.cookfolio.NewRecipe.NewRecipeActivity;
+import com.example.cookfolio.Perfil_Despensa.ProfileActivity;
 import com.example.cookfolio.R;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import com.example.cookfolio.AmplifyConfig.AmplifyCognito;
+import com.example.cookfolio.AmplifyConfig.AWSConfig;
+import com.example.cookfolio.Search.SearchActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -26,14 +29,39 @@ public class HomeActivity extends AppCompatActivity {
     private List<Recipe> recipeList;
     private String username;
     Button signOut;
-    AmplifyCognito amplifyCognito;
+    AWSConfig AWSConfig;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        amplifyCognito = new AmplifyCognito(getApplicationContext());
         setContentView(R.layout.fragment_home);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.bottom_home){
+                return true;
+            }
+            else if (item.getItemId() == R.id.bottom_search) {
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
+                return true;
+            }else if (item.getItemId() == R.id.bottom_profile) {
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
+                return true;
+            }else if (item.getItemId() == R.id.bottom_recipes) {
+                startActivity(new Intent(getApplicationContext(), NewRecipeActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
+                return true;
+            }
+            return false;
+        });
+        AWSConfig = new AWSConfig(getApplicationContext());
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         recyclerView = findViewById(R.id.recyclerView);
@@ -44,8 +72,8 @@ public class HomeActivity extends AppCompatActivity {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                amplifyCognito.loadLogin();
-                amplifyCognito.logOut();
+                AWSConfig.loadLogin();
+                AWSConfig.logOut();
             }
         });
         LocalDateTime now = null;
@@ -69,5 +97,8 @@ public class HomeActivity extends AppCompatActivity {
         // Populate recipeList with data
         recipeAdapter = new RecipeAdapter(recipeList);
         recyclerView.setAdapter(recipeAdapter);
+
+
+
     }
 }
