@@ -52,6 +52,7 @@ public class NewRecipeActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
     AWSConfig awsConfig;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +60,30 @@ public class NewRecipeActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_recipe_creation);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_recipes);
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.bottom_recipes){
                 return true;
             }
             else if (item.getItemId() == R.id.bottom_search) {
-                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), SearchActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_home) {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), HomeActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_profile) {
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), ProfileActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
