@@ -22,6 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private FeedRecipesAdapter recipesAdapter;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +30,30 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_navigation_profile);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
-
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.bottom_profile){
                 return true;
             }
             else if (item.getItemId() == R.id.bottom_search) {
-                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), SearchActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_home) {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), HomeActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_recipes) {
-                startActivity(new Intent(getApplicationContext(), NewRecipeActivity.class));
+                Intent navInt = new Intent(getApplicationContext(), NewRecipeActivity.class);
+                navInt.putExtra("username", username);
+                startActivity(navInt);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
@@ -73,13 +81,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void navigateToProfile() {
-        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        Intent navInt = new Intent(getApplicationContext(), ProfileActivity.class);
+        navInt.putExtra("username", username);
+        startActivity(navInt);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
     private void navigateToPantry() {
-        startActivity(new Intent(getApplicationContext(), DespensaActivity.class));
+        Intent navInt = new Intent(getApplicationContext(), DespensaActivity.class);
+        navInt.putExtra("username", username);
+        startActivity(navInt);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }

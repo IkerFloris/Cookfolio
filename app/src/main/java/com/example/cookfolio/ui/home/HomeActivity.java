@@ -44,17 +44,23 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
             else if (item.getItemId() == R.id.bottom_search) {
-                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_profile) {
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }else if (item.getItemId() == R.id.bottom_recipes) {
-                startActivity(new Intent(getApplicationContext(), NewRecipeActivity.class));
+                Intent intent = new Intent(getApplicationContext(), NewRecipeActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;

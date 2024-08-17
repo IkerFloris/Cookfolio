@@ -39,6 +39,7 @@ public class SignInActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
                 AWSConfig.signIn(username,password);
             }
+
         });
 
         btnSignUp = findViewById(R.id.btnSignUp);
