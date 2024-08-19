@@ -1,21 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Título de la receta -->
     <EditText
         android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Título de la receta"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Spinner para seleccionar la dificultad -->
+    <Spinner
+        android:id="@+id/difficultySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:entries="@array/difficulty_levels"/>
+
+    <!-- Tiempo de cocción -->
+    <EditText
+        android:id="@+id/cookingTimeEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tiempo de cocción (minutos)"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/difficultySpinner"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Descripción de la receta -->
     <EditText
         android:id="@+id/descriptionEditText"
         android:layout_width="match_parent"
@@ -23,52 +45,60 @@
         android:hint="Descripción"
         android:inputType="textMultiLine"
         android:minLines="3"
-        app:layout_constraintTop_toBottomOf="@+id/cookingTimeEditText"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cookingTimeEditText"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/cookingTimeEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tiempo de cocción (minutos)"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/difficultySpinner"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <Spinner
-        android:id="@+id/difficultySpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/difficulty_levels"
-        app:layout_constraintTop_toBottomOf="@+id/titleEditText"
-        tools:layout_editor_absoluteX="16dp" />
-
+    <!-- Imagen de la receta -->
     <ImageView
         android:id="@+id/recipeImageView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@android:color/darker_gray"
-        android:clickable="true"
-        android:contentDescription="Imagen de la receta"
-        android:focusable="true"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionEditText"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/descriptionEditText"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- RecyclerView para los ingredientes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ingredientsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recipeImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/addIngredientButton" />
+
+    <!-- Botón para añadir ingrediente -->
+    <Button
+        android:id="@+id/addIngredientButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Afegir Ingredient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addRecipeButton"
+        app:layout_constraintTop_toBottomOf="@id/ingredientsRecyclerView" />
+
+    <!-- Botón de añadir receta -->
     <Button
         android:id="@+id/addRecipeButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="Publicar"
         android:backgroundTint="@android:color/darker_gray"
         android:enabled="false"
-        android:text="Añadir"
-        app:layout_constraintTop_toBottomOf="@+id/recipeImageView"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintStart_toEndOf="@+id/addIngredientButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ingredientsRecyclerView" />
 
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bottom_background"
         android:elevation="2dp"
@@ -77,9 +107,10 @@
         app:itemRippleColor="@android:color/transparent"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addRecipeButton"
-        app:layout_constraintVertical_bias="1.0"
-        app:menu="@menu/bottom_menu"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/addIngredientButton"
+        app:menu="@menu/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

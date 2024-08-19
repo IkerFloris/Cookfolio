@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -75,6 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         Button profileButton = findViewById(R.id.navigation_profile);
         Button pantryButton = findViewById(R.id.navigation_pantry);
+        TextView etUsername = findViewById(R.id.profile_name);
+        etUsername.setText(username);
 
         profileButton.setOnClickListener(v -> navigateToProfile());
         pantryButton.setOnClickListener(v -> navigateToPantry());

@@ -92,7 +92,7 @@ public class AWSConfig {
 
     private void loadHome(String username){
         Intent intent = new Intent(context, HomeActivity.class);
-        intent.putExtra("username", username);
+        intent.putExtra("username", username.toLowerCase());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
