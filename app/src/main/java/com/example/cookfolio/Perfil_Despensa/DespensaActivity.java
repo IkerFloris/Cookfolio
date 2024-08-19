@@ -13,11 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cookfolio.Classes.ApiCalls;
 import com.example.cookfolio.Classes.Product;
+import com.example.cookfolio.Classes.SwipeToDeleteCallback;
 import com.example.cookfolio.NewRecipe.NewRecipeActivity;
 import com.example.cookfolio.R;
 import com.example.cookfolio.Search.SearchActivity;
@@ -61,8 +63,11 @@ public class DespensaActivity extends AppCompatActivity {
         // Configuramos el RecyclerView
         RecyclerView recyclerView = findViewById(R.id.pantry_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productAdapter = new DespensaProductAdapter(productList);
+        productAdapter = new DespensaProductAdapter(productList, this);
         recyclerView.setAdapter(productAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(productAdapter));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         // Configuramos el Spinner (inicialmente vacío)
         spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, products);
@@ -254,6 +259,22 @@ public class DespensaActivity extends AppCompatActivity {
             Log.e("API Error", "Error obteniendo productos del rebost", error);
             return null;
         });
+    }
+
+    public void deleteItemDespensa(Product product) throws ExecutionException, InterruptedException {
+
+        CompletableFuture<Integer> productID = ApiCalls.getProductID(product.getName());
+        CompletableFuture<Void> future = ApiCalls.deleteProductFromRebost(idRebost, productID.get());
+        future.thenRun(() -> {
+            runOnUiThread(() -> {
+                productList.remove(product);
+                productAdapter.notifyDataSetChanged();
+            });
+        }).exceptionally(error -> {
+            Log.e("API Error", "Error deleting product from rebost: " + error.getMessage());
+            return null;
+        });
+
     }
 
 }

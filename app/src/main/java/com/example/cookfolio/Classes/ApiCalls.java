@@ -214,17 +214,18 @@ public class ApiCalls {
         return future;
     }
 
-    public static void createRecipe(int idRecepta, int idUsuari, String nom, String descripcio, int tempsDeCoccio, String dificultat, String dataCreacio, String imatgeRecepta) {
+    public static CompletableFuture<Integer> createRecipe(Recipe recipe) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
         try {
             JSONObject jsonBody = new JSONObject();
-            jsonBody.put("idRecepta", idRecepta);
-            jsonBody.put("idUsuari", idUsuari);
-            jsonBody.put("nom", nom);
-            jsonBody.put("descripcio", descripcio);
-            jsonBody.put("tempsDeCoccio", tempsDeCoccio);
-            jsonBody.put("dificultat", dificultat);
-            jsonBody.put("dataCreacio", dataCreacio);
-            jsonBody.put("imatgeRecepta", imatgeRecepta);
+            jsonBody.put("idRecepta", recipe.getRecipeId());
+            jsonBody.put("idUsuari", recipe.getUserId());
+            jsonBody.put("nom", recipe.getName());
+            jsonBody.put("descripcio", recipe.getDescription());
+            jsonBody.put("tempsDeCoccio", recipe.getCookingTime());
+            jsonBody.put("dificultat", recipe.getDifficulty());
+            jsonBody.put("dataCreacio", recipe.getTimestamp());
+            jsonBody.put("imatgeRecepta", recipe.getRecipeImage());
 
             RestOptions options = RestOptions.builder()
                     .addPath("/Cookfolio/createRecipe")
@@ -233,16 +234,22 @@ public class ApiCalls {
 
             Amplify.API.put(options,
                     response -> {
-                        Log.i("AmplifyAPI", "Recipe updated successfully: " + response.getData().asString());
+                        Log.i("AmplifyAPI", "Recipe created successfully: " + response.getData().asString());
+                        // Devuelve el id de la receta creada (lo obtenemos del propio recipe)
+                        future.complete(recipe.getRecipeId());
                     },
                     error -> {
-                        Log.e("AmplifyAPI", "Update failed", error);
+                        Log.e("AmplifyAPI", "Error creating recipe", error);
+                        future.completeExceptionally(error);
                     }
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            future.completeExceptionally(e);
         }
+
+        return future;
     }
+
 
     public static CompletableFuture<Integer> getIdRebost(int idUsuari) {
         CompletableFuture<Integer> future = new CompletableFuture<>();
@@ -433,8 +440,162 @@ public class ApiCalls {
         return future;
     }
 
+    public static CompletableFuture<Void> deleteProductFromRebost(int idRebost, int productId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
+        // Construir la ruta para eliminar el producto del rebost usando el nombre del producto
+        String path = "/Cookfolio/deleteProductFromRebost?idRebost=" + idRebost + "&idProducte=" + productId;
 
+        // Crear las opciones de la solicitud DELETE
+        RestOptions options = RestOptions.builder()
+                .addPath(path)
+                .build();
 
+        // Hacer la llamada a la API usando Amplify
+        Amplify.API.delete(options,
+                response -> {
+                    // Completar el future exitosamente
+                    future.complete(null);
+                },
+                error -> {
+                    Log.e("API Error", "Error deleting product from rebost: " + error.getMessage());
+                    future.completeExceptionally(new Exception("Error deleting product from rebost: " + error.getMessage()));
+                }
+        );
+
+        return future;
+    }
+
+    public static CompletableFuture<List<Recipe>> getAllRecipesExceptUser(int idUsuari) {
+        CompletableFuture<List<Recipe>> future = new CompletableFuture<>();
+
+        // Construir la ruta para la llamada API
+        String path = "/Cookfolio/getAllRecipesMainFeed?idUsuari=" + idUsuari;
+
+        RestOptions options = RestOptions.builder()
+                .addPath(path)
+                .build();
+
+        // Hacer la llamada API usando Amplify
+        Amplify.API.get(options,
+                response -> {
+                    try {
+                        List<Recipe> recipeList = new ArrayList<>();
+                        String responseData = response.getData().asString();
+                        Log.d("API Response", "Data received: " + responseData);
+                        JSONArray jsonArray = new JSONArray(responseData);
+
+                        // Parsear los datos y construir la lista de recetas
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonRecipe = jsonArray.getJSONObject(i);
+                            Recipe recipe = new Recipe(
+                                    jsonRecipe.getInt("idRecepta"),
+                                    jsonRecipe.getInt("idUsuari"),
+                                    jsonRecipe.getString("dataCreacio"),
+                                    jsonRecipe.getString("descripcio"),
+                                    jsonRecipe.getString("imatgeRecepta"),
+                                    jsonRecipe.getString("nom"),
+                                    jsonRecipe.getString("dificultat"),
+                                    jsonRecipe.getInt("tempsDeCoccio")
+                            );
+                            recipeList.add(recipe);
+                        }
+
+                        // Completar el future con la lista de recetas
+                        future.complete(recipeList);
+
+                    } catch (Exception e) {
+                        Log.e("API Error", "Exception parsing response", e);
+                        future.completeExceptionally(e);
+                    }
+                },
+                error -> {
+                    Log.e("API Error", "GET failed", error);
+                    future.completeExceptionally(new Exception("Error fetching recipes: " + error.getMessage()));
+                }
+        );
+
+        return future;
+    }
+
+    public static CompletableFuture<String> getUsernameByUserID(int userID) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        // Construir la ruta para la llamada API
+        String path = "/Cookfolio/getUsername?idUsuari=" + userID;
+
+        RestOptions options = RestOptions.builder()
+                .addPath(path)
+                .build();
+
+        // Hacer la llamada API usando Amplify
+        Amplify.API.get(options,
+                response -> {
+                    try {
+                        String responseData = response.getData().asString();
+                        JSONObject jsonResponse = new JSONObject(responseData);
+
+                        // Verificar si hay un campo de error o si obtenemos el username
+                        if (jsonResponse.has("nomUsuari")) {
+                            String username = jsonResponse.getString("nomUsuari");
+                            future.complete(username);
+                        } else if (jsonResponse.has("message")) {
+                            future.completeExceptionally(new Exception(jsonResponse.getString("message")));
+                        }
+                    } catch (Exception e) {
+                        future.completeExceptionally(e);
+                    }
+                },
+                error -> future.completeExceptionally(new Exception("Error fetching username: " + error.getMessage()))
+        );
+
+         return future;
+    }
+
+    public static CompletableFuture<Void> addIngredientToRecipe(int idRecepta, Ingredient ingredient) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        // Primero necesitamos obtener el idProducte y la unitatMesura antes de hacer la llamada PUT
+        CompletableFuture<Integer> futureProductId = getProductID(ingredient.getName());
+        CompletableFuture<String> futureUnitatMesura = getUnitatMesura(ingredient.getName());
+
+        CompletableFuture.allOf(futureProductId, futureUnitatMesura).thenAccept(voidResult -> {
+            try {
+                int idProducte = futureProductId.get();
+                String unitatMesura = futureUnitatMesura.get();
+
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("idRecepta", idRecepta);
+                jsonBody.put("idProducte", idProducte);
+                jsonBody.put("quantitat", ingredient.getQuantity());
+                jsonBody.put("unitats", unitatMesura);
+                jsonBody.put("preu", 0);
+
+                RestOptions options = RestOptions.builder()
+                        .addPath("/Cookfolio/addIngredientToRecipe")
+                        .addBody(jsonBody.toString().getBytes())
+                        .build();
+
+                Amplify.API.put(options,
+                        response -> {
+                            Log.i("API Success", "Ingredient added successfully");
+                            future.complete(null);
+                        },
+                        error -> {
+                            Log.e("API Error", "Error adding ingredient", error);
+                            future.completeExceptionally(error);
+                        }
+                );
+
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        }).exceptionally(error -> {
+            future.completeExceptionally(error);
+            return null;
+        });
+
+        return future;
+    }
 
 }

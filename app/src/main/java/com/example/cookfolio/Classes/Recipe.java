@@ -7,8 +7,6 @@ import java.util.Date;
 public class Recipe {
     private int recipeId;
     private int userId;
-    private String username;
-    private String profileImage;
     private String recipeImage;
     private String name;
     private String timestamp;
@@ -18,9 +16,13 @@ public class Recipe {
 
     // Constructor, getters and setters
 
-    public Recipe(String username, String timestamp, String description, String profileImage, String recipeImage, String name, String difficulty, int cookingTime) {
-        this.username = username;
-        this.profileImage = profileImage;
+
+
+
+    public Recipe(int recipeId, int userId, String timestamp, String description, String recipeImage, String name, String difficulty, int cookingTime) {
+
+        this.recipeId = recipeId;
+        this.userId = userId;
         this.recipeImage = recipeImage;
         this.timestamp = timestamp;
         this.name = name;
@@ -30,26 +32,21 @@ public class Recipe {
 
     }
 
-    public String getUsername() {
-        return username;
+    public int getRecipeId() {
+        return recipeId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public int getUserId() {
+        return userId;
     }
-
     public String getName(){return name;}
 
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
 
-    public String getProfileImage() {
-        return profileImage;
-    }
+    public String getTimestamp() {
 
-    public String getTimestamp() {return timestamp;}
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+        String formattedDate = timestamp.substring(0,10);
+        return formattedDate;
     }
 
     public String getRecipeImage() {
@@ -58,6 +55,18 @@ public class Recipe {
 
     public void setRecipeImage(String  recipeImage) {
         this.recipeImage = recipeImage;
+    }
+
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
     }
 }
 

@@ -2,6 +2,7 @@ package com.example.cookfolio.NewRecipe;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,37 +12,44 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.storage.StorageException;
-import com.amplifyframework.storage.result.StorageUploadFileResult;
 import com.example.cookfolio.AmplifyConfig.AWSConfig;
 import com.example.cookfolio.Classes.ApiCalls;
+import com.example.cookfolio.Classes.Recipe;
+import com.example.cookfolio.Classes.Ingredient;
 import com.example.cookfolio.Perfil_Despensa.ProfileActivity;
 import com.example.cookfolio.R;
-import com.example.cookfolio.Classes.Recipe;
-import com.example.cookfolio.Containers.RecipeContainer;
 import com.example.cookfolio.Search.SearchActivity;
 import com.example.cookfolio.ui.home.HomeActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class NewRecipeActivity extends AppCompatActivity {
 
+    // Campos para la receta
     private EditText titleEditText, descriptionEditText, cookingTimeEditText;
     private Spinner difficultySpinner;
     private ImageView recipeImageView;
@@ -54,14 +62,23 @@ public class NewRecipeActivity extends AppCompatActivity {
     AWSConfig awsConfig;
     private String username;
 
+    // Campos para gestionar los ingredientes
+    private Button addIngredientButton;
+    private RecyclerView ingredientsRecyclerView;
+    private IngredientAdapter ingredientAdapter;
+    private List<Ingredient> ingredientList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_recipe_creation);
+
+        // Inicializamos las vistas
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_recipes);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.bottom_recipes){
                 return true;
@@ -99,6 +116,19 @@ public class NewRecipeActivity extends AppCompatActivity {
         recipeImageView = findViewById(R.id.recipeImageView);
         addRecipeButton = findViewById(R.id.addRecipeButton);
 
+        // Inicializamos las vistas para los ingredientes
+        addIngredientButton = findViewById(R.id.addIngredientButton);
+        ingredientsRecyclerView = findViewById(R.id.ingredientsRecyclerView);
+
+        // Configuramos el RecyclerView para los ingredientes
+        ingredientAdapter = new IngredientAdapter(ingredientList);
+        ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ingredientsRecyclerView.setAdapter(ingredientAdapter);
+
+        // Configuramos el evento para añadir un ingrediente
+        addIngredientButton.setOnClickListener(v -> showAddIngredientDialog());
+
+        // Configuramos el evento para seleccionar una imagen
         recipeImageView.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
@@ -107,6 +137,7 @@ public class NewRecipeActivity extends AppCompatActivity {
             }
         });
 
+        // Watchers para verificar que todos los campos estén completos antes de habilitar el botón
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -127,8 +158,64 @@ public class NewRecipeActivity extends AppCompatActivity {
         addRecipeButton.setOnClickListener(v -> uploadImageToS3AndSaveRecipe());
     }
 
+    private void showAddIngredientDialog() {
+        // Inflar el layout del diálogo
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_add_ingredient, null);
+
+        // Crear el AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Añadir Ingrediente");
+        builder.setView(dialogView);
+
+        // Obtener referencias a los componentes del diálogo
+        Spinner productSpinner = dialogView.findViewById(R.id.product_spinner);
+        EditText quantityEditText = dialogView.findViewById(R.id.ingredientQuantityEditText);
+
+        // Llamar a la API para obtener los nombres de los productos
+        ApiCalls.getAllProductNames().thenAccept(productNames -> {
+            // Crear un ArrayAdapter con los nombres de los productos
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, productNames);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            // Establecer el adaptador en el Spinner
+            runOnUiThread(() -> productSpinner.setAdapter(adapter));
+        }).exceptionally(error -> {
+            // Manejo de errores si la llamada a la API falla
+            Log.e("API Error", "Error fetching product names", error);
+            return null;
+        });
+
+        // Configurar los botones del diálogo
+        builder.setPositiveButton("Añadir", (dialog, which) -> {
+            String selectedProduct = productSpinner.getSelectedItem().toString();
+            String quantityStr = quantityEditText.getText().toString();
+
+            if (!quantityStr.isEmpty()) {
+                int quantity = Integer.parseInt(quantityStr);
+                Ingredient ingredient = new Ingredient(selectedProduct, quantity);
+
+                // Asegurarnos de que la actualización del RecyclerView se realice en el hilo principal
+                runOnUiThread(() -> {
+                    ingredientList.add(ingredient);
+                    ingredientAdapter.notifyDataSetChanged();
+                });
+
+                Log.d("AddIngredient", "Añadiendo ingrediente: " + selectedProduct + " Cantidad: " + quantity);
+            }
+        });
+
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+        // Mostrar el diálogo
+        builder.create().show();
+    }
+
+
+
     private int generateRandomNum() {
-        int randomNumber = (int) (Math.random() * 1_000_000_000_000_0000L);
+        int randomNumber = (int) (Math.random() * 100000) + 1;
         return randomNumber;
     }
 
@@ -161,10 +248,8 @@ public class NewRecipeActivity extends AppCompatActivity {
         }
     }
 
-
-    private void uploadImageToS3AndSaveRecipe(){
+    private void uploadImageToS3AndSaveRecipe() {
         if (selectedImageUri != null) {
-            String username = "username"; // Aquí debes obtener el nombre de usuario actual de tu aplicación.
             String randomFileName = generateRandomFileName();
             String filePath = username + "/" + randomFileName;
 
@@ -192,19 +277,16 @@ public class NewRecipeActivity extends AppCompatActivity {
 
             // Subir la imagen a S3
             Amplify.Storage.uploadFile(
-                    filePath, // Ruta donde se almacenará la imagen en S3
+                    filePath,
                     tempFile,
                     result -> {
                         recipeImageUrl = result.getPath(); // Guarda la URL del archivo subido
                         saveRecipe(); // Guardar la receta con la URL de la imagen
-
-
                     },
                     error -> Toast.makeText(this, "Fallo al subir la imagen a S3", Toast.LENGTH_LONG).show()
             );
         }
     }
-
 
     private void checkFieldsForEmptyValues() {
         String title = titleEditText.getText().toString();
@@ -223,40 +305,53 @@ public class NewRecipeActivity extends AppCompatActivity {
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
-
     }
 
     private void saveRecipe() {
-        // Aquí obtienes la URL del archivo en S3
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fechaFormateada = fechaHoraActual.format(formato);
+
+        CompletableFuture<Integer> userID = ApiCalls.getUserID(username);
         Amplify.Storage.getUrl(
                 recipeImageUrl,
                 result -> {
-                    Recipe recipe = new Recipe(
-                            "Chef Bezos", // Reemplaza con el nombre real del usuario si es necesario
-                            "01/01/01",  // Reemplaza con la fecha actual o el valor necesario
-                            descriptionEditText.getText().toString(),
-                            "profileimg.xml", // Reemplaza con la URL del perfil si es necesario
-                            result.getUrl().toString(), // URL completa del archivo en S3
-                            titleEditText.getText().toString(),
-                            difficultySpinner.getSelectedItem().toString(),
-                            Integer.parseInt(cookingTimeEditText.getText().toString())
-                    );
-                    CompletableFuture<Integer> future = ApiCalls.getUserID("ifloris");
+                    Recipe recipe = null;
                     try {
-                        ApiCalls.createRecipe(generateRandomNum(), future.get(), titleEditText.getText().toString(), descriptionEditText.getText().toString(),
-                                Integer.parseInt(cookingTimeEditText.getText().toString()), difficultySpinner.getSelectedItem().toString(), "01/01/01", recipeImageUrl);
-                    } catch (ExecutionException e) {
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
+                        recipe = new Recipe(
+                                generateRandomNum(),
+                                userID.get(),
+                                fechaFormateada,
+                                descriptionEditText.getText().toString(),
+                                recipeImageUrl,
+                                titleEditText.getText().toString(),
+                                difficultySpinner.getSelectedItem().toString(),
+                                Integer.parseInt(cookingTimeEditText.getText().toString())
+                        );
+                    } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
 
-                    RecipeContainer.addRecipe(recipe);
+                    // Guardar la receta
+                    ApiCalls.createRecipe(recipe).thenAccept(idRecepta -> {
+                        // Después de guardar la receta, guardar los ingredientes en la base de datos
+                        Log.i("DEBUG", "Received idRecepta: " + idRecepta);
+                        Log.i("DEBUG", "Ingredient list size: " + ingredientList.size());
+                        for (Ingredient ingredient : ingredientList) {
+                            Log.i("DEBUG", "Adding ingredient: " + ingredient.getName());
+                            ApiCalls.addIngredientToRecipe(idRecepta, ingredient)
+                                    .thenAccept(aVoid -> Log.i("API Success", "Ingredient added to recipe"))
+                                    .exceptionally(error -> {
+                                        Log.e("API Error", "Failed to add ingredient", error);
+                                        return null;
+                                    });
+                        }
 
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "¡Receta creada!", Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent()); // Reinicia la actividad
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "¡Receta creada!", Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(getIntent()); // Reinicia la actividad
+                        });
                     });
                 },
                 error -> Toast.makeText(this, "Failed to get image URL", Toast.LENGTH_LONG).show()

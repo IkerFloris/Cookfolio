@@ -12,13 +12,16 @@ import com.example.cookfolio.Classes.Product;
 import com.example.cookfolio.R;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class DespensaProductAdapter extends RecyclerView.Adapter<DespensaProductAdapter.ProductViewHolder> {
 
     private List<Product> productList;
+    private DespensaActivity despensaActivity;
 
-    public DespensaProductAdapter(List<Product> productList) {
+    public DespensaProductAdapter(List<Product> productList, DespensaActivity despensaActivity) {
         this.productList = productList;
+        this.despensaActivity = despensaActivity;
     }
 
     @NonNull
@@ -50,5 +53,9 @@ public class DespensaProductAdapter extends RecyclerView.Adapter<DespensaProduct
             productQuantity = itemView.findViewById(R.id.product_quantity);
             productUnit = itemView.findViewById(R.id.product_unit);
         }
+    }
+
+    public void deleteItem(int position) throws ExecutionException, InterruptedException {
+        despensaActivity.deleteItemDespensa(productList.get(position));
     }
 }
