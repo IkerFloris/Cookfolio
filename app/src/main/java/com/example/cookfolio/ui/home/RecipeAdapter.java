@@ -56,11 +56,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeTimestamp.setText(recipe.getTimestamp());
         holder.recipeName.setText(recipe.getName());
         holder.description.setText(recipe.getDescription());
+        holder.temsCoccio.setText(recipe.getCookingTime() + " m");
+        holder.dificultat.setText(recipe.getDifficulty());
+
 
         String uniqueFileName = "recipe_image" + recipe.getRecipeImage().hashCode();
 
         Log.d("S3Path", "Attempting to download file from S3 at path: " + recipe.getRecipeImage());
-        // Descargar la imagen de la receta desde S3 usando la ruta relativa
         Amplify.Storage.downloadFile(
                 StoragePath.fromString(recipe.getRecipeImage()),
                 new File(holder.itemView.getContext().getCacheDir(), uniqueFileName),
@@ -68,7 +70,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Glide.with(holder.itemView.getContext())
                                 .load(result.getFile())
-                                .placeholder(R.drawable.ic_background)  // Imagen de marcador de posición
+                                .placeholder(R.drawable.ic_background)
                                 .into(holder.recipeImage);
                     });
                 },
@@ -85,7 +87,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profileImage, recipeImage, likeIcon, commentIcon;
-        TextView username, recipeTimestamp, recipeName, description;
+        TextView username, recipeTimestamp, recipeName, description, temsCoccio, dificultat;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +99,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             commentIcon = itemView.findViewById(R.id.comment_icon);
             recipeName = itemView.findViewById(R.id.recipeName);
             description = itemView.findViewById(R.id.description);
+            temsCoccio = itemView.findViewById(R.id.tempsCoccio);
+            dificultat = itemView.findViewById(R.id.dificultat);
+
         }
     }
 }
