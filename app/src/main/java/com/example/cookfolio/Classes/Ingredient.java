@@ -14,6 +14,11 @@ public class Ingredient {
         this.name = name;
         this.quantity = quantity;
     }
+    public Ingredient(String name, int quantity, String unitat) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unitat = unitat;
+    }
 
     public String getName() {
         return name;

@@ -6,10 +6,13 @@ import com.amplifyframework.api.rest.RestOptions;
 import com.amplifyframework.core.Amplify;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -596,5 +599,71 @@ public class ApiCalls {
 
         return future;
     }
+    public static CompletableFuture<List<Ingredient>> getIngredientsForRecipe(int recipeId) {
+        CompletableFuture<List<Ingredient>> future = new CompletableFuture<>();
+
+        // Construir la ruta para la llamada API
+        String path = "/Cookfolio/getIngredientsForRecipe?idRecepta=" + recipeId;
+
+        RestOptions options = RestOptions.builder()
+                .addPath(path)
+                .build();
+
+        // Hacer la llamada API usando Amplify
+        Amplify.API.get(options,
+                response -> {
+                    try {
+                        String responseData = response.getData().asString();
+                        Log.d("API Response", "Data received: " + responseData);
+
+                        // Intentar parsear la respuesta como un JSONArray
+                        JSONArray ingredientsArray;
+                        try {
+                            ingredientsArray = new JSONArray(responseData);
+                        } catch (JSONException e) {
+                            // Si falla, manejar el caso de un objeto JSON con un mensaje de error
+                            JSONObject errorResponse = new JSONObject(responseData);
+                            if (errorResponse.has("message")) {
+                                String errorMessage = errorResponse.getString("message");
+                                Log.e("API Error", "Server error: " + errorMessage);
+                                future.completeExceptionally(new Exception("Server error: " + errorMessage));
+                                return;
+                            } else {
+                                throw e; // Rethrow if it's not the expected format
+                            }
+                        }
+
+                        // Procesar el array de ingredientes
+                        List<Ingredient> ingredientList = new ArrayList<>();
+                        for (int i = 0; i < ingredientsArray.length(); i++) {
+                            JSONObject ingredientJson = ingredientsArray.getJSONObject(i);
+                            String name = ingredientJson.getString("nom");
+                            int quantity = ingredientJson.getInt("quantitat");
+                            String unit = ingredientJson.getString("unitats");
+
+                            Ingredient ingredient = new Ingredient(name, quantity, unit);
+                            ingredientList.add(ingredient);
+                        }
+
+                        // Completar el future con la lista de ingredientes
+                        future.complete(ingredientList);
+
+                    } catch (Exception e) {
+                        Log.e("API Error", "Exception parsing response", e);
+                        future.completeExceptionally(e);
+                    }
+                },
+                error -> {
+                    Log.e("API Error", "GET failed", error);
+                    future.completeExceptionally(new Exception("Error fetching ingredients: " + error.getMessage()));
+                }
+        );
+
+        return future;
+    }
+
+
+
+
 
 }

@@ -102,8 +102,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // Configurar el RecyclerView y el Adapter
-        recipeAdapter = new RecipeAdapter(recipeList);
+        recipeAdapter = new RecipeAdapter(recipeList, getSupportFragmentManager());
         recyclerView.setAdapter(recipeAdapter);
+
+
     }
 
     @Override
