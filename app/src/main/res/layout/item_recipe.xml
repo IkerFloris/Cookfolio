@@ -99,7 +99,7 @@
         android:contentDescription="@string/like_icon_desc"
         android:src="@drawable/ic_like_unliked"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonIngredient" />
 
     <ImageView
         android:id="@+id/comment_icon"
@@ -112,6 +112,42 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/like_icon"
         app:layout_constraintTop_toTopOf="@+id/like_icon" />
+
+    <Button
+        android:id="@+id/buttonIngredient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Veure ingredients"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description" />
+
+    <TextView
+        android:id="@+id/tempsCoccio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="15m"
+        app:layout_constraintBottom_toTopOf="@+id/recipe_image"
+        app:layout_constraintEnd_toEndOf="@+id/recipe_timestamp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/username"
+        app:layout_constraintTop_toTopOf="@+id/profile_image"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/dificultat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Difícil"
+        app:layout_constraintBottom_toTopOf="@+id/recipe_image"
+        app:layout_constraintEnd_toEndOf="@+id/recipe_timestamp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/tempsCoccio"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

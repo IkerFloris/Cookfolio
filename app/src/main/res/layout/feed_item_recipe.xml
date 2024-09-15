@@ -14,5 +14,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_recipe_placeholder" />
+        android:src="@drawable/galleta_con_trozos_de_chocolate" />
 </androidx.constraintlayout.widget.ConstraintLayout>

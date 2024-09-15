@@ -280,8 +280,8 @@ public class NewRecipeActivity extends AppCompatActivity {
                     filePath,
                     tempFile,
                     result -> {
-                        recipeImageUrl = result.getPath(); // Guarda la URL del archivo subido
-                        saveRecipe(); // Guardar la receta con la URL de la imagen
+                        recipeImageUrl = result.getPath();
+                        saveRecipe();
                     },
                     error -> Toast.makeText(this, "Fallo al subir la imagen a S3", Toast.LENGTH_LONG).show()
             );

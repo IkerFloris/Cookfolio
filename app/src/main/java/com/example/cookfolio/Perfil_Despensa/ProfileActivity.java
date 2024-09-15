@@ -68,8 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
 
         List<Integer> recipeImages = Arrays.asList(
-                R.drawable.ic_recipe_placeholder,
-                R.drawable.ic_beef_goulash
+                R.drawable.galleta_con_trozos_de_chocolate
         );
 
         recipesAdapter = new FeedRecipesAdapter(this, recipeImages);

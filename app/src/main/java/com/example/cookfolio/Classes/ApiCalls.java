@@ -27,10 +27,9 @@ public class ApiCalls {
 
                     if (responseData.isEmpty() || responseData.equals("[]")) {
                         Log.i("AmplifyCognito", "GET succeeded with no data. Generating random integer and executing PUT call.");
-
                         // Generar un número aleatorio
                         int randomId = new Random().nextInt(1000000); // Ajustar el rango si es necesario
-
+                        addNewRebost(randomId, username);
                         // Preparar el cuerpo de la solicitud PUT
                         String putBody = "{\"idRebost\": " + randomId + ", \"nomUsuari\": \"" + username + "\"}";
 
